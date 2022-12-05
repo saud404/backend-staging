@@ -1,0 +1,62 @@
+
+stages: 
+  #- test
+  - deploy
+  #- build
+
+#build-dev: 
+#  image: "node:16"
+#  only:
+#   - test
+#  script: 
+#    - "npm install"
+#    - "npm run"
+#  stage: build
+
+# test-dev: 
+#   script: 
+#     - "echo \"Code is tested\""
+#   stage: test
+
+deploy-dev: 
+  before_script:
+    - "apk add --no-cache openssh"
+    - "mkdir -p ~/.ssh"
+    - "eval \"$(ssh-agent -s)\""
+    - "echo \"$SSH_PRIVATE_KEY\" | tr -d '\\r' | ssh-add -"
+    - "chmod 700 ~/.ssh"
+    - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+  image: alpine
+  only: 
+    - staging
+  script: 
+    - pwd
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" 
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" set -f
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" sudo rm -rf /home/ubuntu/tropical/backend
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" " cd /home/ubuntu/tropical && sudo git clone https://tropical-pools:8pygQMp2kh99cieWXxxE@gitlab.com/Codistan/tropical-pools-construction/backend.git"
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" "cd /home/ubuntu/tropical/backend && sudo git checkout staging"
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" echo "Running npm install"
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" sudo chmod -R 777 /home/ubuntu/tropical/backend
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" "cd /home/ubuntu/tropical/backend && pwd && npm install"
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" "cd /home/ubuntu/tropical/backend && sudo echo $'
+        PORT = 3000 \n
+        SESSION_SECRET = yoursecret \n
+        DB_HOST=localhost \n
+        DB_PORT=3306 \n
+        DB_DATABASE=tropicalv1 \n
+        DB_USERNAME=root \n
+        DB_PASSWORD=mynewpassword \n
+        ACCESS_TOKEN_EXPIRY=2h \n
+        JWT_TOKEN_KEY=mytokenkeyquweyiuqwey \n
+        JWT_VERIFY_TOKEN_KEY=asdhkasjhdkajshdkjahskdjhakduieuwyiquwyeiuqwhdjsdkahkdjhaksdjh \n
+        ADMIN_JWT_TOKEN_KEY=myAdminJWT8732yeuhwkdnadkj \n
+        FROM=codistantesting@gmail.com \n
+        PASSWORD=yhiztopxxmflbzpf \n
+        FROM=codistantesting@gmail.com \n
+        FRONT_END_URL=http://localhost:3000 \n
+
+      ' > .env"
+    - ssh -o StrictHostKeyChecking=no ubuntu@"$SERVER_IP" "cd /home/ubuntu/tropical/backend &&  pm2 restart API ||  pm2 start index.js --name=API"
+    
+  stage: deploy
