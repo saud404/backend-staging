@@ -57,11 +57,13 @@ router.get('/expense', ExpenseController.Expenses);
 router.get(`${projectPrefix}/project-expense/:id`, ProjectExpenseController.getProjectExpenses);
 
 //Attendance report
-router.get(`${projectPrefix}/attendance`, AttendanceController.findAllAttendance);
+router.get(`${projectPrefix}/attendance/`, AttendanceController.findAllAttendance);
 router.post(`${projectPrefix}/attendance`, AttendanceController.addAttendance);
 router.patch(`${projectPrefix}/attendance/:id`, AttendanceController.updateAttendance);
 router.delete(`${projectPrefix}/attendance/:id`, AttendanceController.removeAttendance);
-router.get(`${projectPrefix}/attendance/:id`, AttendanceController.getStartAndEndTime);
+router.get(`${projectPrefix}/attendance/`, AttendanceController.oneToManyAttendanceBetweenSelectedTimes);
+router.post(`${projectPrefix}/attendance/`, AttendanceController.manyAttendancesBetweenTwoDates);
+// router.post(`/attendance/`, AttendanceController.getStartAndEndTime);
 //Work Report
 
 // ----------------------PHASE-2 Manager & Foreman Flow --------------------

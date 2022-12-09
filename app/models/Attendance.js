@@ -12,16 +12,16 @@ const Attendance = sequelize.define(
     primaryKey: true,
   },
   startDate: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: true,
   },
   endDate: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: true,
   },
   hoursWorked: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    // allowNull: false,
   },
   name: DataTypes.STRING,
   present: {
@@ -30,23 +30,25 @@ const Attendance = sequelize.define(
   },
   late: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    // allowNull: false,
   },
-  user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+  // user_id: {
+  //   type: DataTypes.INTEGER,
+  //   // allowNull: false,
+  //   // defaultValue: 3
 
+  // },
+
+});
+User.hasMany(Attendance, {
+  foreignKey: "userId",
+  // sourceKey: User.id,
 });
 Attendance.belongsTo(User, {
-  foreignKey: 'user_id',
-  sourceKey: User.id,
+  foreignKey: 'userId',
+  // sourceKey: User.id,
 });
 
-User.hasMany(Attendance, {
-  foreignKey: "id",
-  sourceKey: User.id,
-});
 
 
 module.exports = Attendance;

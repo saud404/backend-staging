@@ -147,7 +147,7 @@ exports.removeExpense = (req, res, next) => {
 			} else {
 				res.status(400).send({
 					success: false,
-					message: 'Expense doesnt exists',
+					message: 'Expense dosent exists',
 				});
 			}
 		})
