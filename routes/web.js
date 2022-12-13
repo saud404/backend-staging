@@ -64,6 +64,7 @@ router.delete(`${projectPrefix}/attendance/:id`, AttendanceController.removeAtte
 router.get(`${projectPrefix}/attendance/`, AttendanceController.oneToManyAttendanceBetweenSelectedTimes);
 router.post(`${projectPrefix}/attendance/`, AttendanceController.manyAttendancesBetweenTwoDates);
 // router.post(`/attendance/`, AttendanceController.getStartAndEndTime);
+
 //Work Report
 
 // ----------------------PHASE-2 Manager & Foreman Flow --------------------
